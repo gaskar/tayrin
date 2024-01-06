@@ -1,8 +1,8 @@
 package services
 
 import (
-	"api/api/models"
 	"context"
+	"server/models"
 )
 
 func (s *BinanceService) GetCandles(ctx context.Context, symbol string, interval string) ([]models.CandleDto, error) {

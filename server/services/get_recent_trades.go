@@ -1,8 +1,8 @@
 package services
 
 import (
-	"api/api/models"
 	"context"
+	"server/models"
 )
 
 func (s *BinanceService) GetRecentTrades(ctx context.Context, symbol string) (*[]models.TradeDto, error) {

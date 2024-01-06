@@ -1,11 +1,11 @@
 package main
 
 import (
-	"api/api/handlers"
-	"api/api/services"
 	"log"
 	"net/http"
 	"os"
+	"server/handlers"
+	"server/services"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
