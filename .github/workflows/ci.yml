@@ -13,11 +13,19 @@ jobs:
       uses: actions/checkout@v2
 
     - name: SSH and Deploy to DigitalOcean
-      uses: appleboy/ssh-action@master
-      with:
-        host: 64.225.102.81
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          scp -v -o StrictHostKeyChecking=no ./scripts/deploy.sh root@64.225.102.81:/tmp/deploy.sh
-          ssh -v -o StrictHostKeyChecking=no root@64.225.102.81 'bash /tmp/deploy.sh'
+      run: |
+        # Setup SSH Key
+        SSH_PRIVATE_KEY=${{ secrets.SSH_PRIVATE_KEY }}
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+        # Disable SSH Host Key Checking
+        SSH_HOST="64.225.102.81"
+        echo "$SSH_HOST ssh-ed25519 ..." >> ~/.ssh/known_hosts
+
+        # Copy deploy script to the server
+        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ./scripts/deploy.sh root@$SSH_HOST:/tmp/deploy.sh
+
+        # Execute deploy script on the server
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SSH_HOST 'bash /tmp/deploy.sh'
