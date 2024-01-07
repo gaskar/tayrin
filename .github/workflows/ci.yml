@@ -8,6 +8,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: SSH and Deploy to DigitalOcean
       uses: appleboy/ssh-action@master
       with:
@@ -15,4 +19,5 @@ jobs:
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          /home/user/deploy.sh
+          scp ./scripts/deploy.sh root@64.225.102.81:/tmp/deploy.sh
+          ssh root@64.225.102.81 'bash /tmp/deploy.sh'
