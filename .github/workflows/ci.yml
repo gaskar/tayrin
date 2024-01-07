@@ -18,7 +18,6 @@ jobs:
         host: 64.225.102.81
         username: root
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
         script: |
-          scp -o StrictHostKeyChecking=no ./scripts/deploy.sh root@64.225.102.81:/tmp/deploy.sh
-          ssh -o StrictHostKeyChecking=no root@64.225.102.81 'bash /tmp/deploy.sh'
+          scp -v -o StrictHostKeyChecking=no ./scripts/deploy.sh root@64.225.102.81:/tmp/deploy.sh
+          ssh -v -o StrictHostKeyChecking=no root@64.225.102.81 'bash /tmp/deploy.sh'
