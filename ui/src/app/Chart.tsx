@@ -21,10 +21,11 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
 
       // Transform chart data to the format expected by line series
       const lineData: LineData[] = chartData.map(data => ({
-        time: data.time,
+        time: data.closeTime,
         value: data.close, // For a line chart, you might use 'close' value or another as needed
       }));
 
+      console.log(lineData);
       lineSeries.setData(lineData);
 
       return () => {

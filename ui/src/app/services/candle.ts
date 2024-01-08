@@ -1,23 +1,28 @@
 import { UTCTimestamp } from 'lightweight-charts';
+import { API_URL } from './config';
 
 export interface ChartData {
-  time: UTCTimestamp;
-  open: number;
-  high: number;
-  low: number;
+  openTime: UTCTimestamp;
+  closeTime: UTCTimestamp;
+  high: string;
+  low: string;
   close: number;
+  open: string;
+  volume: string;
 }
 
-export const fetchChartData = async (): Promise<ChartData[]> => {
-  const response = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30');
+export const fetchChartData = async (pair: string): Promise<ChartData[]> => {
+  const response = await fetch(`${API_URL}/candles?symbol=${pair}`);
   const data = await response.json();
 
-  const chartData: ChartData[] = data.prices.map(([time, value]: [number, number]) => ({
-    time: Math.floor(time / 1000) as UTCTimestamp, // Convert to seconds and cast to UTCTimestamp
-    open: value, // Mock values for open, high, low, close
-    high: value,
-    low: value,
-    close: value,
+  const chartData: ChartData[] = data.map(({openTime, closeTime, high, low, close, open, volume}: any) => ({
+    openTime: Math.floor(openTime / 1000) as UTCTimestamp, // Convert to seconds and cast to UTCTimestamp
+    closeTime: Math.floor(closeTime / 1000) as UTCTimestamp, // Convert to seconds and cast to UTCTimestamp
+    open: open,
+    high: high,
+    low: low,
+    close: parseFloat(close),
+    volume: volume,
   }));
 
   return chartData;

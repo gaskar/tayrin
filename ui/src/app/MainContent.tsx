@@ -7,7 +7,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchChartData();
+      const data = await fetchChartData("BTCUSDT");
       setChartData(data);
     };
 
