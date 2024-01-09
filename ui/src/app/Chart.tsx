@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { createChart, LineSeriesPartialOptions, LineData } from 'lightweight-charts';
+import { createChart, CandlestickSeriesPartialOptions, CandlestickData, HistogramSeriesPartialOptions, HistogramData } from 'lightweight-charts';
 import { ChartData } from './services/candle';
 
 interface CryptoChartProps {
@@ -8,33 +8,51 @@ interface CryptoChartProps {
 
 const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  // let chart: IChartApi | null = null;
-  // let series: ISeriesApi<"Candlestick"> | null = null;
 
   useEffect(() => {
     if (chartContainerRef.current) {
       const chart = createChart(chartContainerRef.current, { width: 600, height: 300 });
-      const lineSeriesOptions: LineSeriesPartialOptions = {
-        // options for the line series
+      const candlestickSeriesOptions: CandlestickSeriesPartialOptions = {
+        // options for the candlestick series
       };
-      const lineSeries = chart.addLineSeries(lineSeriesOptions);
+      const candleSeries = chart.addCandlestickSeries(candlestickSeriesOptions);
 
-      // Transform chart data to the format expected by line series
-      const lineData: LineData[] = chartData.map(data => ({
-        time: data.closeTime,
-        value: data.close, // For a line chart, you might use 'close' value or another as needed
+      const volumeSeriesOptions: HistogramSeriesPartialOptions = {
+        color: 'rgba(38, 166, 154, 0.6)', // Adjust color and opacity
+        priceFormat: {
+          type: 'volume',
+        },
+        priceScaleId: '',
+      };
+
+      const volumeSeries = chart.addHistogramSeries(volumeSeriesOptions);
+
+      // Transform chart data to the format expected by candlestick series
+      const candlestickData: CandlestickData[] = chartData.map(data => ({
+        time: data.closeTime, // Ensure this is in the format expected by the library
+        open: data.open,
+        high: data.high,
+        low: data.low,
+        close: data.close,
       }));
 
-      console.log(lineData);
-      lineSeries.setData(lineData);
+      const volumeData: HistogramData[] = chartData.map(data => ({
+        time: data.closeTime,
+        value: data.volume,
+        color: data.close > data.open ? '#26a69a' : '#ef5350', // Example: green for rising, red for falling
+      }));
 
+      candleSeries.setData(candlestickData);
+      volumeSeries.setData(volumeData);
+      
       return () => {
         chart.remove();
       };
     }
   }, [chartData]);
 
-  return <div ref={chartContainerRef} style={{ width: '100%', height: '300px' }} />;
+  return <div ref={chartContainerRef} style={{ width: '100%', height: '600px' }} />;
 };
 
 export default CryptoChart;
+

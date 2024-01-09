@@ -4,11 +4,11 @@ import { API_URL } from './config';
 export interface ChartData {
   openTime: UTCTimestamp;
   closeTime: UTCTimestamp;
-  high: string;
-  low: string;
+  high: number;
+  low: number;
   close: number;
-  open: string;
-  volume: string;
+  open: number;
+  volume: number;
 }
 
 export const fetchChartData = async (pair: string): Promise<ChartData[]> => {
@@ -18,11 +18,11 @@ export const fetchChartData = async (pair: string): Promise<ChartData[]> => {
   const chartData: ChartData[] = data.map(({openTime, closeTime, high, low, close, open, volume}: any) => ({
     openTime: Math.floor(openTime / 1000) as UTCTimestamp, // Convert to seconds and cast to UTCTimestamp
     closeTime: Math.floor(closeTime / 1000) as UTCTimestamp, // Convert to seconds and cast to UTCTimestamp
-    open: open,
-    high: high,
-    low: low,
+    open: parseFloat(open),
+    high: parseFloat(high),
+    low: parseFloat(low),
     close: parseFloat(close),
-    volume: volume,
+    volume: parseFloat(volume),
   }));
 
   return chartData;
