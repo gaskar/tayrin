@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { createChart, CandlestickSeriesPartialOptions, CandlestickData, HistogramSeriesPartialOptions, HistogramData } from 'lightweight-charts';
+import { createChart, CandlestickData, HistogramSeriesPartialOptions, HistogramData } from 'lightweight-charts';
 import { ChartData } from './services/candle';
 
 interface CryptoChartProps {
@@ -11,11 +11,8 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
 
   useEffect(() => {
     if (chartContainerRef.current) {
-      const chart = createChart(chartContainerRef.current, { width: 600, height: 300 });
-      const candlestickSeriesOptions: CandlestickSeriesPartialOptions = {
-        // options for the candlestick series
-      };
-      const candleSeries = chart.addCandlestickSeries(candlestickSeriesOptions);
+      const chart = createChart(chartContainerRef.current);
+      const candleSeries = chart.addCandlestickSeries();
 
       const volumeSeriesOptions: HistogramSeriesPartialOptions = {
         color: 'rgba(38, 166, 154, 0.6)', // Adjust color and opacity
@@ -27,9 +24,8 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
 
       const volumeSeries = chart.addHistogramSeries(volumeSeriesOptions);
 
-      // Transform chart data to the format expected by candlestick series
       const candlestickData: CandlestickData[] = chartData.map(data => ({
-        time: data.closeTime, // Ensure this is in the format expected by the library
+        time: data.closeTime,
         open: data.open,
         high: data.high,
         low: data.low,
@@ -39,8 +35,15 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
       const volumeData: HistogramData[] = chartData.map(data => ({
         time: data.closeTime,
         value: data.volume,
-        color: data.close > data.open ? '#26a69a' : '#ef5350', // Example: green for rising, red for falling
+        color: data.close > data.open ? 'rgba(38, 166, 154, 0.6)' : 'rgba(255, 99, 71, 0.4)',
       }));
+
+      chart.priceScale('').applyOptions({
+        scaleMargins: {
+          top: 0.8,
+          bottom: 0,
+        },
+      });
 
       candleSeries.setData(candlestickData);
       volumeSeries.setData(volumeData);
@@ -51,7 +54,7 @@ const CryptoChart: React.FC<CryptoChartProps> = ({ chartData }) => {
     }
   }, [chartData]);
 
-  return <div ref={chartContainerRef} style={{ width: '100%', height: '600px' }} />;
+  return <div ref={chartContainerRef} style={{ width: '80%', height: '600px' }} />;
 };
 
 export default CryptoChart;

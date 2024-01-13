@@ -1,11 +1,10 @@
-import React from 'react';
-import { Box, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { Box, List, ListItem, ListItemText } from '@mui/material';
 
 export const Sidebar = () => {
   return (
-    <Box>
+    <Box width={250} boxShadow={3}>
       <List>
-        {['Dashboard', 'Settings', 'History'].map((text) => (
+        {['Home'].map((text) => (
           <ListItem button key={text}>
             <ListItemText primary={text} />
           </ListItem>
